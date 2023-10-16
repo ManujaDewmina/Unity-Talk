@@ -134,7 +134,7 @@ class _TranslatorScreenState extends State<TranslatorScreen> {
                   translateText();
                 },
                 style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all<Color>(Colors.brown), // Set your desired button color here
+                  backgroundColor: MaterialStateProperty.all<Color>(Colors.brown),
                 ),
                 child: const Text('Translate'),
               ),
