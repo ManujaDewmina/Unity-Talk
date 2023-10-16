@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +6,16 @@ import 'package:ethic_app/screen/listitem_screen.dart';
 import 'package:ethic_app/screen/newpost_screen.dart';
 import '../Utils/color_utils.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+
+class TopicData {
+  String id;
+  String topic;
+  String user;
+  String Description;
+  String ImageUrl;
+
+  TopicData(this.id, this.topic, this.user, this.Description , this.ImageUrl);
+}
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -19,7 +27,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   FirebaseDatabase database = FirebaseDatabase.instance;
   DatabaseReference ref = FirebaseDatabase.instance.ref();
-  List<String> topicsList = [];
+  List<TopicData> topicsList = [];
   // var currentUser = FirebaseAuth.instance.currentUser;
   // var db = FirebaseFirestore.instance;
   // String name = "1";
@@ -29,17 +37,18 @@ class _HomeScreenState extends State<HomeScreen> {
     ref.onValue.listen((DatabaseEvent event) {
       final data = event.snapshot.value;
       if (data != null && data is Map) {
-        if (data != null && data is Map) {
-          data.forEach((key, value) {
-            if (value is Map && value.containsKey('topic')) {
-              String topic = value['topic'];
-              String id = value['id'];
-              if (!topicsList.contains(topic+"- id : "+id)) {
-                topicsList.add(topic+"- id : "+id);
-              }
+        data.forEach((key, value) {
+          if (value is Map && value.containsKey('topic')) {
+            String topic = value['topic'];
+            String id = value['id'];
+            String user = value['user'];
+            String Description = value['Description'];
+            String ImageUrl = value['ImageUrl'];
+            if (!topicsList.any((element) => element.topic == topic)) {
+              topicsList.add(TopicData(id, topic,user,Description,ImageUrl));
             }
-          });
-        }
+          }
+        });
       }
       setState(() {
         topicsList;
@@ -93,7 +102,11 @@ class _HomeScreenState extends State<HomeScreen> {
                     padding: const EdgeInsets.all(8),
                     itemCount: topicsList?.length ?? 0,
                     itemBuilder: (BuildContext context, int index) {
-                      String itemTitle =  RegExp(r'(\w+)\s*-\s*id\s*:\s*id').firstMatch(topicsList[index])?.group(2) ?? '';
+                      String itemTitle = topicsList[index].topic ?? '';
+                      String itemId = topicsList[index].id ?? '';
+                      String itemUser = topicsList[index].user ?? '';
+                      String itemDescription = topicsList[index].Description ?? '';
+                      String itemImageUrl = topicsList[index].ImageUrl ?? '';
 
                       return Column(
                         children: <Widget>[
@@ -127,7 +140,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) =>
-                                        ListItemScreen(itemTitle),
+                                        ListItemScreen(itemTitle,itemId,itemUser,itemDescription,itemImageUrl),
                                   ),
                                 );
                               },

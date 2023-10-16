@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 import 'package:ethic_app/screen/home_screen_test.dart';
 import 'package:uuid/uuid.dart';
@@ -9,6 +10,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import '../Utils/color_utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class NewPostScreen extends StatefulWidget {
   const NewPostScreen({Key? key}) : super(key: key);
@@ -29,6 +31,8 @@ class _NewPostScreenState extends State<NewPostScreen> {
   DatabaseReference ref = FirebaseDatabase.instance.ref();
   final storage = FirebaseStorage.instance;
   final storageRef = FirebaseStorage.instance.ref("images/");
+  var db = FirebaseFirestore.instance;
+  String name = "";
 
   Future pickImageGallery() async {
     try {
@@ -89,7 +93,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
       await ref.update({
         id: {
           "id": id,
-          "user": uid,
+          "user": name,
           "topic": topic,
           "Description": longText,
           "ImageUrl": imageUrl
@@ -106,6 +110,15 @@ class _NewPostScreenState extends State<NewPostScreen> {
 
   @override
   Widget build(BuildContext context) {
+    String? uid = currentUser?.uid;
+    final docRef = db.collection("Users").doc(uid!);
+    docRef.get().then(
+          (DocumentSnapshot doc) {
+        final data = doc.data() as Map<String, dynamic>;
+        name = data["username"];
+      },
+      onError: (e) => log("Error getting document: $e"),
+    );
     return Scaffold(
       appBar: AppBar(
         backgroundColor: hexStringToColor("301c01"),
