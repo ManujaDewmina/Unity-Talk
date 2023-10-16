@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "527984526187",
+    "project_id": "ethnicapp-6adba",
+    "storage_bucket": "ethnicapp-6adba.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:527984526187:android:eaf6fb9b49dc21f8bc022e",
+        "android_client_info": {
+          "package_name": "com.example.ethic_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCDZDepw2RyHXpZSwZ_xRsuVGYzkDl8230"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
