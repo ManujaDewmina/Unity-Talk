@@ -152,6 +152,7 @@ class _TranslatorScreenState extends State<TranslatorScreen> {
                   style: const TextStyle(fontSize: 16, color: Colors.white),
                 ),
               ),
+              const SizedBox(height: 20),
             ],
           ),
         ),
