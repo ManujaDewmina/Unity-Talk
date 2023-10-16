@@ -2,8 +2,12 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:ethic_app/reusable_widgets/reusable_widget.dart';
 import 'package:flutter/services.dart';
+import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:translator/translator.dart';
 import '../Utils/color_utils.dart';
+
+const List<String> list = <String>['Sinhala', 'English', 'Tamil'];
 
 class OcrScreen extends StatefulWidget {
   const OcrScreen({Key? key}) : super(key: key);
@@ -14,15 +18,20 @@ class OcrScreen extends StatefulWidget {
 
 class _OcrScreenState extends State<OcrScreen> {
   File? image;
+  final _textRecognizer = TextRecognizer(script: TextRecognitionScript.latin);
   final ImagePicker _picker = ImagePicker();
+  String outText = '';
   TextEditingController _textEditingController = TextEditingController();
+  GoogleTranslator translator = GoogleTranslator();
+  String selectedTargetLanguage = "si";
+  String translatedText = '';
 
   Future pickImageGallery() async {
     try {
-      final image = await _picker.pickImage(source: ImageSource.gallery);
-      if (image == null) return;
+      final image1 = await _picker.pickImage(source: ImageSource.gallery);
+      if (image1 == null) return;
 
-      final imageTemp = File(image.path);
+      final imageTemp = File(image1.path);
       setState(() {
         this.image = imageTemp;
       });
@@ -48,10 +57,23 @@ class _OcrScreenState extends State<OcrScreen> {
   }
 
   Future<void> getText() async {
-    // learning.TextRecognition textRecognition = learning.TextRecognition();
-    // input.InputImage imageTemp = input.InputImage.fromFile(image!);
-    // learning.RecognizedText? result = await textRecognition.process(imageTemp);
-    // log(result as String);
+    InputImage inputImage = InputImage.fromFile(image!);
+    final recognizedText = await _textRecognizer.processImage(inputImage);
+    setState(() {
+      outText = recognizedText.text;
+      _textEditingController = TextEditingController(text: outText);
+    });
+  }
+
+  void translateText()
+  {
+    translator.translate(_textEditingController.text, to: selectedTargetLanguage)
+        .then((output)
+    {
+      setState(() {
+        translatedText = output.text;
+      });
+    });
   }
 
   @override
@@ -156,6 +178,73 @@ class _OcrScreenState extends State<OcrScreen> {
                     ),
                   ),
                 ),
+                const SizedBox(height: 10,),
+                const Text('Select Language you want translate :',
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16
+                  ),
+                ),
+                const SizedBox(height: 10,),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    DropdownMenu<String>(
+                      leadingIcon: const Icon(
+                        Icons.language, // Custom icon
+                        color: Colors.blue,
+                      ),
+                      textStyle: const TextStyle(
+                          color: Colors.white
+                      ),
+                      initialSelection: list.first,
+                      onSelected: (String? value) {
+                        setState(() {
+                          if( value! == "Sinhala"){
+                            selectedTargetLanguage = "si";}
+                          else if( value == "English"){
+                            selectedTargetLanguage = "en";}
+                          else if( value == "Tamil"){
+                            selectedTargetLanguage = "ta";}
+                        });
+                      },
+                      dropdownMenuEntries: list.map<DropdownMenuEntry<String>>((String value) {
+                        return DropdownMenuEntry<String>(
+                            value: value,
+                            leadingIcon: const Icon(
+                              Icons.language, // Custom icon
+                              color: Colors.blue,
+                            ),
+                            label: value);
+                      }).toList(),
+                    )
+                  ],
+                ),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: () {
+                    translateText();
+                  },
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all<Color>(Colors.brown), // Set your desired button color here
+                  ),
+                  child: const Text('Translate'),
+                ),
+                const SizedBox(height: 20),
+                Container(
+                  width: 350,
+                  padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
+                  decoration: BoxDecoration(
+                    color: hexStringToColor("422b0e"),
+                    borderRadius: const BorderRadius.all(Radius.circular(20.0)),
+                  ),
+                  child:
+                  Text(
+                    translatedText,
+                    style: const TextStyle(fontSize: 16, color: Colors.white),
+                  ),
+                ),
+                const SizedBox(height: 20),
               ],
             ),
           ),
