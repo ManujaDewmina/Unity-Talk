@@ -40,6 +40,9 @@ dependencies:
   carousel_slider: ^4.2.1
   cloud_firestore: ^4.9.3
   google_mlkit_text_recognition: ^0.10.0
+  firebase_database: ^10.2.7
+  firebase_storage: ^11.2.8
+  uuid: ^4.0.0
 
 dev_dependencies:
   flutter_test:
