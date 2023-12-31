@@ -28,9 +28,9 @@ class _HomeScreenState extends State<HomeScreen> {
   FirebaseDatabase database = FirebaseDatabase.instance;
   DatabaseReference ref = FirebaseDatabase.instance.ref();
   List<TopicData> topicsList = [];
-  // var currentUser = FirebaseAuth.instance.currentUser;
-  // var db = FirebaseFirestore.instance;
-  // String name = "1";
+// var currentUser = FirebaseAuth.instance.currentUser;
+// var db = FirebaseFirestore.instance;
+// String name = "1";
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +45,7 @@ class _HomeScreenState extends State<HomeScreen> {
             String Description = value['Description'];
             String ImageUrl = value['ImageUrl'];
             if (!topicsList.any((element) => element.topic == topic)) {
-              topicsList.add(TopicData(id, topic,user,Description,ImageUrl));
+              topicsList.add(TopicData(id, topic, user, Description, ImageUrl));
             }
           }
         });
@@ -54,17 +54,6 @@ class _HomeScreenState extends State<HomeScreen> {
         topicsList;
       });
     });
-
-    // String? email = currentUser?.email;
-    // String? uid = currentUser?.uid;
-    // final docRef = db.collection("Users").doc(uid!);
-    // docRef.get().then(
-    //       (DocumentSnapshot doc) {
-    //     final data = doc.data() as Map<String, dynamic>;
-    //     name = data["username"];
-    //   },
-    //   onError: (e) => log("Error getting document: $e"),
-    // );
 
     return Scaffold(
       appBar: AppBar(
@@ -84,73 +73,71 @@ class _HomeScreenState extends State<HomeScreen> {
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
         decoration: BoxDecoration(
-            gradient: LinearGradient(colors: [
-          hexStringToColor("301c01"),
-          hexStringToColor("422b0e"),
-          hexStringToColor("9c7035"),
-        ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
+          gradient: LinearGradient(colors: [
+            hexStringToColor("301c01"),
+            hexStringToColor("422b0e"),
+            hexStringToColor("9c7035"),
+          ], begin: Alignment.topCenter, end: Alignment.bottomCenter),
+        ),
         child: Padding(
           padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
           child: SingleChildScrollView(
             child: Column(
               children: <Widget>[
-                SizedBox(
-                  width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.height,
-                  child: ListView.builder(
-                    key: const Key('itemList'),
-                    padding: const EdgeInsets.all(8),
-                    itemCount: topicsList?.length ?? 0,
-                    itemBuilder: (BuildContext context, int index) {
-                      String itemTitle = topicsList[index].topic ?? '';
-                      String itemId = topicsList[index].id ?? '';
-                      String itemUser = topicsList[index].user ?? '';
-                      String itemDescription = topicsList[index].Description ?? '';
-                      String itemImageUrl = topicsList[index].ImageUrl ?? '';
+                // Removed the SizedBox
+                ListView.builder(
+                  key: const Key('itemList'),
+                  padding: const EdgeInsets.all(8),
+                  shrinkWrap: true,
+                  physics: BouncingScrollPhysics(),
+                  itemCount: topicsList?.length ?? 0,
+                  itemBuilder: (BuildContext context, int index) {
+                    String itemTitle = topicsList[index].topic ?? '';
+                    String itemId = topicsList[index].id ?? '';
+                    String itemUser = topicsList[index].user ?? '';
+                    String itemDescription = topicsList[index].Description ?? '';
+                    String itemImageUrl = topicsList[index].ImageUrl ?? '';
 
-                      return Column(
-                        children: <Widget>[
-                          Container(
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              border: Border.all(
-                                color: Colors.black, // Border color
-                                width: 1.0, // Border width
-                              ),
-                              borderRadius:
-                                  BorderRadius.circular(8.0), // Border radius
+                    return Column(
+                      children: <Widget>[
+                        Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            border: Border.all(
+                              color: Colors.black, // Border color
+                              width: 1.0, // Border width
                             ),
-                            child: ListTile(
-                              contentPadding: const EdgeInsets.symmetric(
-                                  horizontal: 16.0, vertical: 8.0),
-                              title: Text(
-                                itemTitle,
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16.0),
-                              ),
-                              leading: const CircleAvatar(
-                                backgroundColor: Colors.grey,
-                                child: Icon(Icons.list, color: Colors.white),
-                              ),
-                              trailing: const Icon(
-                                  Icons.label_important_outline_sharp),
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        ListItemScreen(itemTitle,itemId,itemUser,itemDescription,itemImageUrl),
-                                  ),
-                                );
-                              },
-                            ),
+                            borderRadius:
+                            BorderRadius.circular(8.0), // Border radius
                           ),
-                          const Divider(),
-                        ],
-                      );
-                    },
-                  ),
+                          child: ListTile(
+                            contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 16.0, vertical: 8.0),
+                            title: Text(
+                              itemTitle,
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 16.0),
+                            ),
+                            leading: const CircleAvatar(
+                              backgroundColor: Colors.grey,
+                              child: Icon(Icons.list, color: Colors.white),
+                            ),
+                            trailing: const Icon(Icons.label_important_outline_sharp),
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      ListItemScreen(itemTitle, itemId, itemUser, itemDescription, itemImageUrl),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                        const Divider(),
+                      ],
+                    );
+                  },
                 ),
               ],
             ),
@@ -172,4 +159,5 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
+
 }
