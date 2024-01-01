@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:ethic_app/reusable_widgets/reusable_widget.dart';
 import 'package:ethic_app/screen/listitem_screen.dart';
 import 'package:ethic_app/screen/newpost_screen.dart';
+import 'package:translator/translator.dart';
 import '../Utils/color_utils.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -28,12 +29,27 @@ class _HomeScreenState extends State<HomeScreen> {
   FirebaseDatabase database = FirebaseDatabase.instance;
   DatabaseReference ref = FirebaseDatabase.instance.ref();
   List<TopicData> topicsList = [];
-// var currentUser = FirebaseAuth.instance.currentUser;
-// var db = FirebaseFirestore.instance;
-// String name = "1";
 
-  @override
-  Widget build(BuildContext context) {
+  GoogleTranslator translator = GoogleTranslator();
+  String selectedTargetLanguage = "en";
+
+  void translateTopics() {
+    for (int i = 0; i < topicsList.length; i++) {
+      TopicData topic = topicsList[i];
+
+      translator
+          .translate(topic.topic, to: selectedTargetLanguage)
+          .then((output) {
+        setState(() {
+          topicsList[i].topic = output.text;
+        });
+      });
+    }
+  }
+
+  void initState() {
+    super.initState();
+
     ref.onValue.listen((DatabaseEvent event) {
       final data = event.snapshot.value;
       if (data != null && data is Map) {
@@ -51,9 +67,13 @@ class _HomeScreenState extends State<HomeScreen> {
         });
       }
       setState(() {
-        topicsList;
+        translateTopics();
       });
     });
+  }
+
+  @override
+  Widget build(BuildContext context) {
 
     return Scaffold(
       appBar: AppBar(
@@ -84,7 +104,42 @@ class _HomeScreenState extends State<HomeScreen> {
           child: SingleChildScrollView(
             child: Column(
               children: <Widget>[
-                // Removed the SizedBox
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    DropdownMenu<String>(
+                      leadingIcon: const Icon(
+                        Icons.language,
+                        color: Colors.blue,
+                      ),
+                      textStyle: const TextStyle(color: Colors.white),
+                      initialSelection: list.first,
+                      onSelected: (String? value) {
+                        setState(() {
+                          if (value == "English") {
+                            selectedTargetLanguage = "en";
+                          } else if (value == "Sinhala") {
+                            selectedTargetLanguage = "si";
+                          } else if (value == "Tamil") {
+                            selectedTargetLanguage = "ta";
+                          }
+                        });
+                        translateTopics();
+                      },
+                      dropdownMenuEntries:
+                      list.map<DropdownMenuEntry<String>>((String value) {
+                        return DropdownMenuEntry<String>(
+                          value: value,
+                          leadingIcon: const Icon(
+                            Icons.language,
+                            color: Colors.blue,
+                          ),
+                          label: value,
+                        );
+                      }).toList(),
+                    )
+                  ],
+                ),
                 ListView.builder(
                   key: const Key('itemList'),
                   padding: const EdgeInsets.all(8),

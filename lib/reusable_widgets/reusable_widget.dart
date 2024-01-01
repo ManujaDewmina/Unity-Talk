@@ -7,6 +7,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../Utils/color_utils.dart';
 import '../screen/ocr_screen.dart';
+import '../screen/post_image_translate_screen.dart';
 import '../screen/sign_in_screen.dart';
 
 Image logoWidget(String imageName) {
@@ -164,7 +165,8 @@ Card swapCard(String topic) {
   );
 }
 
-Card commentCard(String itemUser, String itemDescription, String itemImageUrl,BuildContext context) {
+Card commentCard(String itemUser, String itemDescription, String itemImageUrl,
+    BuildContext context) {
   return Card(
     elevation: 4,
     child: Padding(
@@ -194,10 +196,32 @@ Card commentCard(String itemUser, String itemDescription, String itemImageUrl,Bu
           ),
           const SizedBox(height: 8),
           itemImageUrl.isNotEmpty
-              ? Image.network(
-                  itemImageUrl,
-            alignment: Alignment.center,
-            width: MediaQuery.of(context).size.width* 0.4,
+              ? Column(
+                  children: [
+                    ElevatedButton(
+                      onPressed: () {
+                        // Navigate to the PostImageTranslate page and pass the image link
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                PostImageTranslateScreen(itemImageUrl),
+                          ),
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        primary:
+                            Colors.brown, // Set the background color to brown
+                      ),
+                      child: Text('Translate Image'),
+                    ),
+                    const SizedBox(height: 8),
+                    Image.network(
+                      itemImageUrl,
+                      alignment: Alignment.center,
+                      width: MediaQuery.of(context).size.width * 0.4,
+                    ),
+                  ],
                 )
               : Container(),
         ],

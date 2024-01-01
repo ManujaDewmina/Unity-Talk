@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:ethic_app/screen/post_image_translate_screen.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:ethic_app/reusable_widgets/reusable_widget.dart';
@@ -27,22 +28,22 @@ class ListItemScreen extends StatefulWidget {
   final String itemImageUrl;
 
   const ListItemScreen(
-      this.itemTitle,
-      this.itemId,
-      this.itemUser,
-      this.itemDescription,
-      this.itemImageUrl, {
-        Key? key,
-      }) : super(key: key);
+    this.itemTitle,
+    this.itemId,
+    this.itemUser,
+    this.itemDescription,
+    this.itemImageUrl, {
+    Key? key,
+  }) : super(key: key);
 
   @override
   State<ListItemScreen> createState() => _ListItemScreenState(
-    itemTitle,
-    itemId,
-    itemUser,
-    itemDescription,
-    itemImageUrl,
-  );
+        itemTitle,
+        itemId,
+        itemUser,
+        itemDescription,
+        itemImageUrl,
+      );
 }
 
 class _ListItemScreenState extends State<ListItemScreen> {
@@ -53,12 +54,12 @@ class _ListItemScreenState extends State<ListItemScreen> {
   final String itemImageUrl;
 
   _ListItemScreenState(
-      this.itemTitle,
-      this.itemId,
-      this.itemUser,
-      this.itemDescription,
-      this.itemImageUrl,
-      );
+    this.itemTitle,
+    this.itemId,
+    this.itemUser,
+    this.itemDescription,
+    this.itemImageUrl,
+  );
 
   GoogleTranslator translator = GoogleTranslator();
   String selectedTargetLanguage = "en";
@@ -66,6 +67,20 @@ class _ListItemScreenState extends State<ListItemScreen> {
   List<CommentData> commentsList = [];
   FirebaseDatabase database = FirebaseDatabase.instance;
   DatabaseReference ref = FirebaseDatabase.instance.ref("comments/");
+
+  void translateComments() {
+    for (int i = 0; i < commentsList.length; i++) {
+      CommentData comment = commentsList[i];
+
+      translator
+          .translate(comment.Description, to: selectedTargetLanguage)
+          .then((output) {
+        setState(() {
+          commentsList[i].Description = output.text;
+        });
+      });
+    }
+  }
 
   @override
   void initState() {
@@ -85,14 +100,15 @@ class _ListItemScreenState extends State<ListItemScreen> {
             if (postId == itemId) {
               // Add to the commentsList only when postId matches itemId
               if (!commentsList.any((element) => element.id == id)) {
-                commentsList.add(CommentData(id, postId, user, Description, ImageUrl));
+                commentsList
+                    .add(CommentData(id, postId, user, Description, ImageUrl));
               }
             }
           }
         });
         // Call setState here to update the UI
         setState(() {
-          // commentsList;
+          translateComments();
         });
       }
     });
@@ -169,9 +185,10 @@ class _ListItemScreenState extends State<ListItemScreen> {
                           }
                         });
                         translateText();
+                        translateComments();
                       },
-                      dropdownMenuEntries: list
-                          .map<DropdownMenuEntry<String>>((String value) {
+                      dropdownMenuEntries:
+                          list.map<DropdownMenuEntry<String>>((String value) {
                         return DropdownMenuEntry<String>(
                           value: value,
                           leadingIcon: const Icon(
@@ -221,47 +238,66 @@ class _ListItemScreenState extends State<ListItemScreen> {
                         ),
                         const SizedBox(height: 8),
                         itemImageUrl.isNotEmpty
-                            ? Image.network(
-                          itemImageUrl,
-                          alignment: Alignment.center,
-                          width: MediaQuery.of(context).size.width * 0.4,
-                        )
+                            ? Column(
+                                children: [
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      // Navigate to the PostImageTranslate page and pass the image link
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              PostImageTranslateScreen(
+                                                  itemImageUrl),
+                                        ),
+                                      );
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      primary: Colors
+                                          .brown, // Set the background color to brown
+                                    ),
+                                    child: Text('Translate Image'),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Image.network(
+                                    itemImageUrl,
+                                    alignment: Alignment.center,
+                                    width:
+                                        MediaQuery.of(context).size.width * 0.4,
+                                  ),
+                                ],
+                              )
                             : Container(),
                       ],
                     ),
                   ),
                 ),
-                SizedBox(
-                  width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.height,
-                  child: ListView.builder(
-                    physics: const NeverScrollableScrollPhysics(),
-                    key: const Key('commentsList'),
-                    padding: const EdgeInsets.all(8),
-                    itemCount: commentsList.length ?? 0,
-                    itemBuilder: (BuildContext context, int index) {
-                      String itemPostId1 =
-                          commentsList[index].postId ?? '';
-                      String itemId1 = commentsList[index].id ?? '';
-                      String itemUser1 = commentsList[index].user ?? '';
-                      String itemDescription1 =
-                          commentsList[index].Description ?? '';
-                      String itemImageUrl1 =
-                          commentsList[index].ImageUrl ?? '';
+                ListView.builder(
+                  key: const Key('commentsList'),
+                  padding: const EdgeInsets.all(8),
+                  shrinkWrap: true,
+                  physics: BouncingScrollPhysics(),
+                  itemCount: commentsList.length ?? 0,
+                  itemBuilder: (BuildContext context, int index) {
+                    String itemPostId1 = commentsList[index].postId ?? '';
+                    String itemId1 = commentsList[index].id ?? '';
+                    String itemUser1 = commentsList[index].user ?? '';
+                    String itemDescription1 =
+                        commentsList[index].Description ?? '';
+                    String itemImageUrl1 = commentsList[index].ImageUrl ?? '';
 
-                      return Column(
-                        children: <Widget>[
-                          commentCard(
-                            itemUser1,
-                            itemDescription1,
-                            itemImageUrl1,
-                            context,
-                          ),
-                          const Divider(),
-                        ],
-                      );
-                    },
-                  ),
+                    return Column(
+                      children: <Widget>[
+                        commentCard(
+                          itemUser1,
+                          itemDescription1,
+                          itemImageUrl1,
+                          context,
+                        ),
+                        const Divider(),
+                      ],
+                    );
+                  },
                 ),
               ],
             ),
