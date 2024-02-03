@@ -92,7 +92,7 @@ class _PostImageTranslateScreen extends State<PostImageTranslateScreen> {
                 itemImageUrl.isNotEmpty
                     ? Image.network(itemImageUrl)
                     : const Image(
-                  image: AssetImage('assert/images/noimage.png'),
+                  image: AssetImage('assets/images/noimage.png'),
                   width: 210,
                 ),
                 const SizedBox(

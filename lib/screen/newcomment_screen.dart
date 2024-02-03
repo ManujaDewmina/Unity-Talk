@@ -206,7 +206,7 @@ class _NewCommentScreenState extends State<NewCommentScreen> {
                 image != null
                     ? Image.file(image!)
                     : const Image(
-                  image: AssetImage('assert/images/noimage.png'),
+                  image: AssetImage('assets/images/noimage.png'),
                   width: 210,
                 ),
                 const SizedBox(

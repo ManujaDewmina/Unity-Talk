@@ -235,7 +235,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
                 image != null
                     ? Image.file(image!)
                     : const Image(
-                        image: AssetImage('assert/images/noimage.png'),
+                        image: AssetImage('assets/images/noimage.png'),
                         width: 210,
                       ),
                 const SizedBox(

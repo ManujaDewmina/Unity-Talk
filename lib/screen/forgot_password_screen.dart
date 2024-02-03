@@ -88,7 +88,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
             ),
         ),
         SizedBox(width: 10,),
-        Image(image: AssetImage('assert/images/Hand.png'),
+        Image(image: AssetImage('assets/images/Hand.png'),
           width: 210,
         ),
       ],
