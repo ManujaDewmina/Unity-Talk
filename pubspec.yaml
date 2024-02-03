@@ -46,6 +46,13 @@ dependencies:
   provider: ^6.0.3
   flutter_file_dialog: ^3.0.2
   path_provider: ^2.1.1
+  speech_to_text: ^6.5.1
+  flutter_launcher_icons:
+  avatar_glow:
+
+flutter_icons:
+  android: true
+  image_path: "assert/images/Hand.png"
 
 dev_dependencies:
   flutter_test:

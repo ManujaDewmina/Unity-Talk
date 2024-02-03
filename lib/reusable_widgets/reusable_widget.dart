@@ -9,6 +9,7 @@ import '../Utils/color_utils.dart';
 import '../screen/ocr_screen.dart';
 import '../screen/post_image_translate_screen.dart';
 import '../screen/sign_in_screen.dart';
+import '../screen/voice_translator_screen.dart';
 
 Image logoWidget(String imageName) {
   return Image.asset(
@@ -280,7 +281,7 @@ Drawer mainDrawer(BuildContext context) {
             color: Colors.white,
           ),
           title: const Text(
-            'Translator',
+            'Text Translator',
             style: TextStyle(
               color: Colors.white, // White text color
             ),
@@ -308,6 +309,22 @@ Drawer mainDrawer(BuildContext context) {
                 MaterialPageRoute(builder: (context) => const OcrScreen()));
           },
         ),
+        // ListTile(
+        //   leading: const Icon(
+        //     Icons.volume_up,
+        //     color: Colors.white,
+        //   ),
+        //   title: const Text(
+        //     'Voice Translator',
+        //     style: TextStyle(
+        //       color: Colors.white, // White text color
+        //     ),
+        //   ),
+        //   onTap: () {
+        //     Navigator.push(context,
+        //         MaterialPageRoute(builder: (context) => const VoiceTranslatorScreen()));
+        //   },
+        // ),
         ListTile(
           leading: const Icon(
             Icons.find_in_page,
