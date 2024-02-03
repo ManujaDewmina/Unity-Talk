@@ -6,6 +6,18 @@ Welcome to Unity Talk, a revolutionary community-centered mobile application des
 ## Problem Statement
 In today's diverse world, language barriers often impede effective communication and understanding within multicultural communities. This leads to a myriad of challenges such as misunderstandings, frustration, limited access to information, and even social isolation. Unity Talk is here to address these issues and create a bridge between people of different linguistic backgrounds.
 
+## Used Technologies
+  - Programming Language - Dart
+  - Framework - Flutter
+  - IDE - Android Studio
+  - Backend
+      <ul>
+      <li>Authentication - Firebase Authentication</li>
+      <li>Database - Firestore Database</li>
+      <li>Realtime Database - Firebase Realtime Database</li>
+      <li>Storage - Firebase Cloud Storage</li>
+    </ul>
+
 ## Key Features
 
 ### 1. Cultural Discussion Forums
