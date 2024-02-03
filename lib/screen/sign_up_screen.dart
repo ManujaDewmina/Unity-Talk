@@ -124,7 +124,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               )
           ),
           SizedBox(width: 40,),
-          Image(image: AssetImage('assert/images/Hand.png'),
+          Image(image: AssetImage('assets/images/Hand.png'),
             width: 210,
           ),
         ],

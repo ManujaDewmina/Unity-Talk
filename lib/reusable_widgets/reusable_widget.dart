@@ -254,7 +254,7 @@ Drawer mainDrawer(BuildContext context) {
                   height: 10,
                 ),
                 Image(
-                  image: AssetImage('assert/images/Hand.png'),
+                  image: AssetImage('assets/images/Hand.png'),
                   height: 100,
                 ),
               ],
